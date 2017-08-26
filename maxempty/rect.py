@@ -10,7 +10,7 @@ import getopt
 DEBUGGING = False
 
 
-def largestrect(nrows, ncols, im, bgcolor, fgcolor):
+def largest(nrows, ncols, im, bgcolor, fgcolor):
     maxarea = (0, [])
 
     h = numpy.zeros(dtype=int, shape=(nrows, ncols))
@@ -18,10 +18,12 @@ def largestrect(nrows, ncols, im, bgcolor, fgcolor):
 
     for r in range(nrows):  # y
         for c in range(ncols):  # x
-            if bgcolor and im.getpixel((c, r)) != bgcolor:
+            # Пропускать всё что не подходит под цвет фона:
+            if (bgcolor is not None) and im.getpixel((c, r)) != bgcolor:
                 continue
 
-            if fgcolor and im.getpixel((c, r)) == fgcolor:
+            # Пропускать всё что подходит под цвет переднего плана:
+            if (fgcolor is not None) and im.getpixel((c, r)) == fgcolor:
                 continue
 
             if r == 0:
@@ -93,7 +95,7 @@ def main(argv):
             fgcolor = tuple(map(int, arg.split(',')))
 
     width, height = img.size
-    maxarea = largestrect(height, width, img, bgcolor, fgcolor)
+    maxarea = largest(height, width, img, bgcolor, fgcolor)
     print(maxarea)  # (S, [(y1, x1, y2, x2)])
 
     if DEBUGGING:
